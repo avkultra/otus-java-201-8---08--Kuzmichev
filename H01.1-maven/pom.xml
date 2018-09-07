@@ -58,7 +58,7 @@
                 </configuration>
             </plugin>
 
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.0.0</version>
@@ -78,41 +78,13 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.home.h011.Main</mainClass>
+                            <mainClass>ru.otus.h011.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin-->
-
-            <plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.14</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sf.proguard</groupId>
-                        <artifactId>proguard-base</artifactId>
-                        <version>5.0</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals><goal>proguard</goal></goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <proguardVersion>5.0</proguardVersion>
-                    <options>
-                        <option>-keep public class ru.otus.h011.Main{public static void main(java.lang.String[]);}</option>
-                    </options>
-                    <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
-                        <lib>${java.home}/lib/jce.jar</lib>
-                    </libs>
-                </configuration>
             </plugin>
-    
+
+
         </plugins>
 
     </build>
