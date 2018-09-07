@@ -3,5 +3,5 @@ Archiver-Version: Plexus Archiver
 Created-By: Apache Maven 3.5.4
 Built-By: kual
 Build-Jdk: 10.0.2
-Main-Class: ru.otus.home.h011.Main
+Main-Class: ru.otus.h011.Main
 
