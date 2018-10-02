@@ -1,51 +1,65 @@
-package ru.otus.h031
+package ru.otus.h031;
 import com.google.common.collect.Lists;
+import ru.otus.H031.MyArrayList;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
-/**
- * Created by tully.
- *
- * Example for H03.1
- *
- * To start the application:
- * mvn package
- * java -cp ./target/L01.1-maven.jar ru.otus.h011.Main
- * java -jar ./target/L01.1-maven.jar //java.lang.NoClassDefFoundError: com/google/common/collect/Lists
- * java -cp ./target/L01.1-maven.jar;C:\Users\Tully\.m2\repository\com\google\guava\guava\25.0-jre\guava-25.0-jre.jar ru.otus.h011.Main
- *
- * To unzip the jar:
- * 7z x -oJAR ./target/H01.1-maven.jar
- * unzip -d JAR ./target/H01.1-maven.jar
- *
- * To build:
- * mvn package
- * mvn clean compile
- * mvn assembly:single
- * mvn clean compile assembly:single
- */
 public class Main {
-    private static final int MEASURE_COUNT = 1;
-
-    public static void main(String... args) {
-        Collection<Integer> example = new ArrayList<>();
-        int min = 0;
-        int max = 999_999;
-        for (int i = min; i < max + 1; i++) {
-            example.add(i);
-        }
-
-        List<Integer> result = new ArrayList<>();
-        Collections.shuffle((List<Integer>)example);
-        calcTime(() -> result.addAll(Lists.reverse((List<Integer>)example)));
+     public static void main(String... args) {
+        AddAll();
+        Copy();
+        Sort();
     }
 
-    private static void calcTime(Runnable runnable) {
-        long startTime = System.nanoTime();
-        for (int i = 0; i < MEASURE_COUNT; i++)
-            runnable.run();
-        long finishTime = System.nanoTime();
-        long timeNs = (finishTime - startTime) / MEASURE_COUNT;
-        System.out.println("Time spent: " + timeNs + "ns (" + timeNs / 1_000_000 + "ms)");
+    private static void AddAll() {
+        System.out.println();
+        System.out.println("Test addAll");
+        MyArrayList<String> list = new MyArrayList<String>();
+        System.out.println("List before: Empty = " + list.isEmpty());
+        ///////
+        Collections.addAll(list, "first", "second", "third");
+        ///////
+        System.out.println("List after: " + list.toString());
+      }
+
+    private static void Copy() {
+        System.out.println();
+        System.out.println("Test copy");
+        ArrayList<String> arrLst = new ArrayList() ;
+        Collections.addAll(arrLst, "first", "second", "third");
+
+        List<String> alst = Arrays.asList(new String[arrLst.size()]);
+        MyArrayList<String> end = new MyArrayList<String>(alst);
+
+        System.out.println("List before: " + arrLst.toString());
+        System.out.println("End list: Empty = " + end.isEmpty());
+        ///////
+        Collections.copy(end, arrLst);
+        ///////
+        System.out.println("End list after copy(): " + end.toString());
+       }
+
+    private static void Sort() {
+        System.out.println();
+        System.out.println("Test sort");
+        MyArrayList<String> list = new MyArrayList() ;
+        Collections.addAll(list, "first", "second", "third");
+
+        System.out.println("List before: " + list.toString());
+        ///////
+        Collections.sort(list, new Comparator<String>() {
+
+            public int compare(String s_1, String s_2) {
+                if (null == s_1 || null == s_2)
+                    throw new InvalidParameterException("cannot be null");
+
+                return s_1.compareTo(s_2);
+            }
+
+        });
+        ///////
+        System.out.println("List after: " + list.toString());
+
     }
 }
