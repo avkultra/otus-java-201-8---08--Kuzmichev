@@ -30,16 +30,7 @@
         <my.variable>42</my.variable>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${com.google.guava.version}</version>
-        </dependency>
-    </dependencies>
-
-
-    <build>
+     <build>
 
         <finalName>${project.name}</finalName>
 
