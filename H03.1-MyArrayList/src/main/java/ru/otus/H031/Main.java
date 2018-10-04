@@ -6,12 +6,18 @@ import java.util.*;
 
 public class Main {
      public static void main(String... args) {
-        AddAll();
-        Copy();
-        Sort();
+        //addAll();
+        //copy();
+        //sort();
+
+         MyArrayList<Integer> list = new MyArrayList<>();
+
+         for(int i = 0; i < 61; i++){
+             list.add(i);
+         }
     }
 
-    private static void AddAll() {
+    private static void addAll() {
         System.out.println();
         System.out.println("Test addAll");
         MyArrayList<String> list = new MyArrayList<String>();
@@ -22,7 +28,7 @@ public class Main {
         System.out.println("List after: " + list.toString());
       }
 
-    private static void Copy() {
+    private static void copy() {
         System.out.println();
         System.out.println("Test copy");
         ArrayList<String> arrLst = new ArrayList() ;
@@ -39,7 +45,7 @@ public class Main {
         System.out.println("End list after copy(): " + end.toString());
        }
 
-    private static void Sort() {
+    private static void sort() {
         System.out.println();
         System.out.println("Test sort");
         MyArrayList<String> list = new MyArrayList() ;

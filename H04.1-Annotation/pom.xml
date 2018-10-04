@@ -6,8 +6,8 @@
 
     <!-- Project Object Model -->
 
-    <name>H03.1-myarraylist</name>
-    <description>Homework H03.1</description>
+    <name>H04.1-Annotation</name>
+    <description>Homework H04.1</description>
 
     <developers>
         <developer>
@@ -19,16 +19,24 @@
     <!--parent>*</parent-->
 
     <groupId>ru.otus</groupId>
-    <artifactId>H03.1-MyArrayList</artifactId>
+    <artifactId>H04.1-Annotation</artifactId>
     <version>2018-08</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <!--com.google.guava.version>23.0</com.google.guava.version-->
+        <com.google.guava.version>23.0</com.google.guava.version>
         <my.variable>42</my.variable>
     </properties>
+
+       <dependencies>
+           <dependency>
+           <groupId>com.google.guava</groupId>
+           <artifactId>guava</artifactId>
+           <version>${com.google.guava.version}</version>
+            </dependency>
+      </dependencies>
 
      <build>
 
@@ -43,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.h031.Main</mainClass>
+                            <mainClass>ru.otus.h041.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -69,7 +77,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.h031.Main</mainClass>
+                            <mainClass>ru.otus.h041.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

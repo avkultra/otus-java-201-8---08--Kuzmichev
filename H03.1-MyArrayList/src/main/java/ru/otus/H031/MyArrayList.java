@@ -4,7 +4,8 @@ import java.util.*;
 
 public class MyArrayList<T> implements List<T> {
     private int size = 0;
-    private int start_capacity = 20;
+    private final static int start_capacity = 20;
+    private int capacity = start_capacity;
     private Object[] array;
 
     public MyArrayList() {
@@ -13,13 +14,11 @@ public class MyArrayList<T> implements List<T> {
     }
 
     public MyArrayList(int capacity) {
-        if (capacity > 0)
+        if (capacity <= 0)
         {
-            this.array = new Object[capacity];
-        }
-        else {
             throw new IllegalArgumentException("Wrong capacity: "+     capacity);
         }
+        this.array = new Object[capacity];
     }
 
     public MyArrayList(Collection<T> c) {
@@ -81,7 +80,12 @@ public class MyArrayList<T> implements List<T> {
     @Override
     public boolean add(T e)
     {
-        if (this.size == this.start_capacity) {
+        if(null == e)
+        {
+            throw new RuntimeException("illegal argument - null reference");
+        }
+
+        if (this.size == this.capacity) {
             increaseCapacity();
         }
 
@@ -89,17 +93,13 @@ public class MyArrayList<T> implements List<T> {
         this.size++;
 
         return true;
-
     }
 
     private void increaseCapacity() {
-        Object[] incremented = new Object[array.length + getSizeToAdd()];
+        this.capacity = 2 * this.size;
+        Object[] incremented = new Object[this.capacity] ;
         System.arraycopy(array, 0, incremented, 0, array.length);
         array = incremented;
-    }
-
-    private int getSizeToAdd() {
-        return (int) (size * 2);
     }
 
     @Override
