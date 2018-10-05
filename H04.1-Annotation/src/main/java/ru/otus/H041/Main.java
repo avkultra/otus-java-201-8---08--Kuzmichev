@@ -1,5 +1,4 @@
 package ru.otus.h041;
-//import ru.otus.H041.MyArrayList;
 /*
 ДЗ 04. Тестовый фреймворк на аннотациях
 Написать свой тестовый фреймворк. Поддержать аннотации @Test, @Before, @After.
@@ -8,10 +7,24 @@ package ru.otus.h041;
 2. именем package в котором надо найти и запустить тесты 
 */
 
-import java.security.InvalidParameterException;
-import java.util.*;
 
 public class Main {
-     public static void main(String... args) {
+     public static void main(String[] args) {
+
+         classWithTest();
+         System.out.println();
+
+         classWithPackage();
         }
+    }
+
+
+    private static void classWithTest() {
+        System.out.println("ClassWithTest");
+     }
+
+    private static void classWithPackage() {
+        String package ="ru.otus.h041.TestsClass";
+        System.out.println("ClassWhithPackage with " + package);
+
     }
