@@ -8,23 +8,39 @@ package ru.otus.h041;
 */
 
 
+
+import ru.otus.H041.TestsClass;
+import ru.otus.H041.AllTest;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+
 public class Main {
-     public static void main(String[] args) {
+     public static void main(String[] args) throws IOException, URISyntaxException, ClassNotFoundException {
 
          classWithTest();
          System.out.println();
-
          classWithPackage();
         }
-    }
 
 
     private static void classWithTest() {
         System.out.println("ClassWithTest");
+
+        AllTest tst = new AllTest(TestsClass.class);
+        tst.runTests();
      }
 
-    private static void classWithPackage() {
-        String package ="ru.otus.h041.TestsClass";
-        System.out.println("ClassWhithPackage with " + package);
 
+
+
+
+    private static void classWithPackage() throws IOException, URISyntaxException, ClassNotFoundException{
+        String pckName ="ru.otus.H041.TestsClass";
+        System.out.println("ClassWhithPackage with " + pckName);
+        AllTest tst = new AllTest(pckName);
+        tst.runTests();
     }
+
+}
