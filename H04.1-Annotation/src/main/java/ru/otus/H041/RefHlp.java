@@ -36,10 +36,13 @@ public class RefHlp {
             String Name;
 
             String jarFile = URLDecoder.decode(url.getFile(), "UTF-8");
+
             jarFile = jarFile.substring(5, jarFile.indexOf("!"));
 
             JarFile jf = new JarFile(jarFile);
+
             Enumeration<JarEntry> entries = jf.entries();
+
             while (entries.hasMoreElements()) {
                 Name = entries.nextElement().getName();
 
@@ -48,11 +51,15 @@ public class RefHlp {
                     names.add(Name);
                 }
             }
+
         } else {
+
+
             URI uri = new URI(url.toString());
             File folder = new File(uri.getPath());
             File[] files = folder.listFiles();
             String Name;
+
             for (File fl : files) {
                 Name = fl.getName();
                 Name = Name.substring(0, Name.lastIndexOf('.'));
