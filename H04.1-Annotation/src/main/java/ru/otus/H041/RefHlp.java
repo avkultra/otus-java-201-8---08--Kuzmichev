@@ -32,7 +32,7 @@ public class RefHlp {
         String pckUrl = pckName.replace(".", "/");
         URL url = classLoader.getResource(pckUrl);
 
-        if (url.getProtocol().equals("jar")) {
+        if (/*url.getProtocol().contains("jar")*/ true) {
             String Name;
 
             String jarFile = URLDecoder.decode(url.getFile(), "UTF-8");

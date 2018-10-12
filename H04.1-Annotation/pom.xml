@@ -6,7 +6,7 @@
 
     <!-- Project Object Model -->
 
-    <name>H04.1-Annotation</name>
+    <name>H04-Annotation</name>
     <description>Homework H04.1</description>
 
     <developers>
@@ -19,7 +19,7 @@
     <!--parent>*</parent-->
 
     <groupId>ru.otus</groupId>
-    <artifactId>H04.1-Annotation</artifactId>
+    <artifactId>H04-Annotation</artifactId>
     <version>2018-08</version>
 
     <properties>

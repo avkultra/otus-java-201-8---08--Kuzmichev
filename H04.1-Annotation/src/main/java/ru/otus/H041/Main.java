@@ -37,7 +37,7 @@ public class Main {
 
 
     private static void classWithPackage() throws IOException, URISyntaxException, ClassNotFoundException{
-        String pckName ="ru.otus.H041.TestsClass";
+        String pckName ="H04.1-Annotation.jar";
         System.out.println("ClassWhithPackage with " + pckName);
         AllTest tst = new AllTest(pckName);
         tst.runTests();
