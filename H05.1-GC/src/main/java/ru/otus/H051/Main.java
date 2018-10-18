@@ -11,8 +11,6 @@ import java.util.concurrent.Executors;
  Собрать статистику (количество сборок, время на сборрки) по разным типам GC.
  */
 
-
-
 public class Main {
     public static void main(String[] args) {
         System.out.println("PID:"+ ManagementFactory.getRuntimeMXBean().getName());
