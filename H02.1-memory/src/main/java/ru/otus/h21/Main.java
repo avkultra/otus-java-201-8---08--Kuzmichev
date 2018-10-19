@@ -1,9 +1,11 @@
 package ru.otus.h21;
 
 import  java.lang.String;
-import java.lang.instrument.Instrumentation;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * VM options -Xmx512m -Xms512m
@@ -17,68 +19,76 @@ import java.lang.reflect.Field;
  * <p>
  * jconsole, connect to pid
  */
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Добавить
+// VM options-javaagent:target/H02.2.jar
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 @SuppressWarnings({"RedundantStringConstructorCall", "InfiniteLoopStatement", "UnusedAssignment"})
 public class Main {
+
+    private static int SIZE = 30_000_000;
+
+    private interface ObjectConstrictor {
+        Object newConstructor();
+    }
     public static void main(String... args) throws InterruptedException {
         System.out.println("pid: " + ManagementFactory.getRuntimeMXBean().getName());
 
-        int size = 30_000_000;
+        basicTypes();
 
-        System.out.println("Starting the loop");
-        while (true) {
-            long mem = getMem();
-            System.out.println("Mem: " + mem);
+        System.out.println("Второй way :");
 
-            Object[] array = new Object[size];
+        long lSize = 0;
+       //Размер объектов
+       lSize = getSizeObject(new String(""));
+       System.out.println("Размер String(empty): " + " size: " + lSize);
 
-            long mem2 = getMem();
-            System.out.println("Ref size: " + (mem2 - mem) / array.length);
+       lSize = getSizeObject(getObject());
+       System.out.println("Размер Object: " + " size: " + lSize);
 
-            for (int i = 0; i < array.length; i++) {
-                //array[i] = new Object();
-                //array[i] = new String(""); //String pool
-                //array[i] = new String(new char[0]); // java8 or java9
-                //array[i] = new String(new byte[0]); //without String pool
-                //array[i] = new MyClass();
-                //array[i] = new byte[1]; //16 or 24 with -XX:-UseCompressedOops
-                array[i] = getObject();
-            }
+       Integer sampleInteger = 100;
+       lSize = getSizeObject(sampleInteger);
+       System.out.println("Integer: " + " size: " + lSize);
 
-            long mem3 = getMem();
-            System.out.println("First way :");
-            System.out.println("Class: " + array[0].getClass().getName() + " size: " + (mem3 - mem2) / array.length);
-            System.out.println("Second way :");
-            getSizeObject(getObject());
+       Object[] array = new Object[SIZE];
+       for (int i = 0; i < SIZE; i++) {
+           array[i] = new byte[1];
+       }
 
-            array = null;
-            System.out.println("Array is ready for GC");
+       lSize = getSizeObject(array);
+       System.out.println("Object[]: " + " size: " + lSize);
 
-            Thread.sleep(1000); //wait for 1 sec
-        }
+       lSize = getSizeObject(new MyClass());
+       System.out.println("MyClass: " + " size: " + lSize);
     }
 
-    public static long getSizeObject(Object obj){
+    //Проблема данного метода что он измеряет только public поля. Чтобы сделать доступ к private,
+    // то нужно получить по имени член класса и сделать privateField.setAccessible(true); таким образом подойдёт 1 способ измерения памяти
+    public static long getSizeObject(Object obj)  throws InterruptedException{
         Field[] fields = obj.getClass().getFields();
         long lSize = Helper.instance().getInstrumentation().getObjectSize(obj);
-        System.out.println("Class: " + obj.getClass().getName() + " size: " + lSize );
+
+        if(String.class == obj.getClass())
+        {
+            return lSize;
+        }
+        //Обойдём все поля
         for(Field field: fields)
         {
             try
             {
                 Class objTmp = field.getType();
-
                 if (objTmp.isPrimitive()) {
                     lSize =+ Helper.instance().getInstrumentation().getObjectSize(field);
-                    System.out.println(field.getName() + ": " + field.get(field));
                 } else {
                     lSize += getSizeObject(field);
                 }
-                System.out.println("Object size: " + lSize);
-
             }
-            catch (IllegalAccessException e)
+            catch (InterruptedException ie)
             {
-                e.printStackTrace();
+                ie.printStackTrace();
             }
         }
         return lSize;
@@ -109,4 +119,100 @@ public class Main {
         private long l = 1;     // +8
         private String s = ("");
     }
+
+    private static void basicTypes() throws InterruptedException {
+        System.gc();
+        Thread.sleep(10);
+
+        System.out.println("Object()");
+        ClassInfo(Object::new);
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(20);
+
+        System.out.println("Integer = 1");
+        ClassInfo(()->(1));
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(20);
+
+
+        System.out.println("Double = 1");
+        ClassInfo(()->(1.0d));
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(20);
+
+        System.out.println("MyClass()");
+        ClassInfo(()->(new MyClass() ));
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(20);
+
+        System.out.println("String()");
+        ClassInfo(()->(new String() ));
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(20);
+
+        System.out.println("String( new char[0])");
+        ClassInfo(()->(new String(new char[0]) ));
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(20);
+
+        Object[] array = new Object[SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            array[i] = new byte[1];
+        }
+    }
+
+    private static void ClassInfo(ObjectConstrictor obConst ) throws InterruptedException {
+
+        Object[] array = new Object[SIZE];
+
+        long mem1 = getMem();
+
+        for (int i = 0; i < array.length; i++) {
+            array[i] = obConst.newConstructor();
+        }
+
+        long mem2 = getMem();
+
+        System.out.println("Class: " + array[0].getClass().getName() + " размер: " + (mem2 - mem1) / array.length);
+
+        printFields(array[0]);
+    }
+
+    private static void printFields(Object object) {
+        if (null == object) return;
+        List<String> Namefields = new ArrayList<>();
+
+        lstNonStaticFields(object.getClass(), Namefields);
+
+        if (Namefields.isEmpty()) {
+            System.out.println("У элемента нет полей");
+        } else {
+            System.out.println("У поля элемента");
+            for (String s : Namefields) {
+                System.out.println(s);
+            }
+        }
+    }
+
+    private static void lstNonStaticFields(Class clazz, List<String> listOfNames) {
+        Field[] fields = clazz.getDeclaredFields();
+
+        if (null != fields &&  0 < fields.length) {
+            for (Field f : fields) {
+                if (!Modifier.isStatic(f.getModifiers())) {
+                    listOfNames.add(f.getType().getTypeName());
+                }
+            }
+        }
+        if (!clazz.getName().contains("Object")) {
+            lstNonStaticFields(clazz.getSuperclass(), listOfNames);
+        }
+    }
+
 }

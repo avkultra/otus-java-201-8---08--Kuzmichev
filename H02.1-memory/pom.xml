@@ -15,6 +15,7 @@
     </properties>
 
     <build>
+        <finalName>H02.2</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
