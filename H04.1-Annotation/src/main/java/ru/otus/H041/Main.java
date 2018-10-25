@@ -17,15 +17,20 @@ import java.net.URISyntaxException;
 
 
 public class Main {
-     public static void main(String[] args) throws IOException, URISyntaxException, ClassNotFoundException {
-
-         classWithTest();
-         System.out.println();
-         classWithPackage();
+     public static void main(String[] args) {
+             try {
+                 classWithTest();
+                 System.out.println();
+                 classWithPackage();
+             }
+             catch(Exception ex)
+             {
+                System.out.println( ex.getMessage() );
+             }
         }
 
 
-    private static void classWithTest() {
+    private static void classWithTest()  {
         System.out.println("ClassWithTest");
 
         AllTest tst = new AllTest(TestsClass.class);
@@ -36,8 +41,8 @@ public class Main {
 
 
 
-    private static void classWithPackage() throws IOException, URISyntaxException, ClassNotFoundException{
-        String pckName ="H04.1-Annotation.jar";
+    private static void classWithPackage()throws IOException, URISyntaxException, ClassNotFoundException  {
+        String pckName ="ru.otus.H041.TestClass";
         System.out.println("ClassWhithPackage with " + pckName);
         AllTest tst = new AllTest(pckName);
         tst.runTests();

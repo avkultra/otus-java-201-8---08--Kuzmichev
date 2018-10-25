@@ -11,7 +11,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class RefHlp {
+public class ReflectionHelper {
     public static ArrayList<Class> getPackageClss(final String pckName)    throws IOException, URISyntaxException, ClassNotFoundException{
         ArrayList<String> classNames = getPackClass(pckName);
         ArrayList<Class> result = new ArrayList<Class>();
@@ -32,7 +32,7 @@ public class RefHlp {
         String pckUrl = pckName.replace(".", "/");
         URL url = classLoader.getResource(pckUrl);
 
-        if (/*url.getProtocol().contains("jar")*/ true) {
+        if (url.getProtocol().contains("jar")) {
             String Name;
 
             String jarFile = URLDecoder.decode(url.getFile(), "UTF-8");

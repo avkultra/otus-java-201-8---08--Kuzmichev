@@ -11,36 +11,36 @@ import java.util.List;
 import ru.otus.H041.annotation.After;
 import ru.otus.H041.annotation.Before;
 import ru.otus.H041.annotation.Test;
-import ru.otus.H041.RefHlp;
+import ru.otus.H041.ReflectionHelper;
 
 public class AllTest {
 
-    private ArrayList<Method> AllMethods;
+    private ArrayList<Method> allMethods;
 
-    public AllTest(Class cls)
+    public AllTest(Class cls) /*throws IOException, URISyntaxException, ClassNotFoundException*/
     {
         if (null == cls)
-            throw new RuntimeException("Class is NULL");
+            throw new IllegalArgumentException("Class is null");
 
-        this.AllMethods = new ArrayList<> (getAnnMethods(cls, Test.class));
+        this.allMethods = new ArrayList<> (getAnnMethods(cls, Test.class));
     }
 
     public AllTest(String pckName) throws IOException, URISyntaxException, ClassNotFoundException {
         if ( pckName == null  || pckName.isEmpty())
-            throw new RuntimeException("is empty package name");
+            throw new IllegalArgumentException("is empty package name");
 
-        this.AllMethods = getAnnPackageMethods(pckName);
+        this.allMethods = getAnnPackageMethods(pckName);
     }
 
 
 
-    private ArrayList<Method> getAnnPackageMethods(String pckName) throws IOException, URISyntaxException, ClassNotFoundException {
-        ArrayList<Class> clss = getPackageClss(pckName);
+    private ArrayList<Method> getAnnPackageMethods(String packageName) throws IOException, URISyntaxException, ClassNotFoundException {
+        ArrayList<Class> clss = getPackageClss(packageName);
        return allTestMethods(clss);
     }
 
-    private ArrayList<Class> getPackageClss(String pckName) throws IOException, URISyntaxException, ClassNotFoundException {
-        ArrayList<Class> classes = RefHlp.getPackageClss (pckName);
+    private ArrayList<Class> getPackageClss(String packageName) throws IOException, URISyntaxException, ClassNotFoundException {
+        ArrayList<Class> classes = ReflectionHelper.getPackageClss (packageName);
         return classes;
     }
 
@@ -94,7 +94,7 @@ public class AllTest {
 
 
     public void runTests() {
-            for (Method m : this.AllMethods) {
+            for (Method m : this.allMethods) {
             runTest(m);
       }
 
@@ -122,7 +122,7 @@ public class AllTest {
         }
         catch (Exception ex)
         {
-
+            System.out.println( ex.getMessage() );
         }
 
       return;
