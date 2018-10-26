@@ -21,7 +21,7 @@ public class Main {
              try {
                  classWithTest();
                  System.out.println();
-                 classWithPackage();
+                 //classWithPackage();
              }
              catch(Exception ex)
              {

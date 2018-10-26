@@ -12,7 +12,7 @@ public class TestsClass {
     @Before
     public void before()
     {
-        this.member = 255;
+        this.member = 100;
         System.out.println("before method");
     }
 
@@ -29,5 +29,16 @@ public class TestsClass {
     public void after()
     {
         System.out.println(" after method");
+    }
+
+
+    @Test
+    public void testFirstWithException() throws Exception {
+        throw new Exception("failed testFirstWithException");
+    }
+
+    @Test
+    public void testSecondWithException() throws Exception {
+        throw new Exception("failed testSecondWithException");
     }
 }

@@ -48,7 +48,7 @@ public class Main {
        lSize = getSizeObject(getObject());
        System.out.println("Размер Object: " + " size: " + lSize);
 
-       Integer sampleInteger = 100;
+       Integer sampleInteger = new Integer(100);
        lSize = getSizeObject(sampleInteger);
        System.out.println("Integer: " + " size: " + lSize);
 
@@ -131,7 +131,7 @@ public class Main {
         Thread.sleep(20);
 
         System.out.println("Integer = 1");
-        ClassInfo(()->(1));
+        ClassInfo(()->(125));
         Thread.sleep(1000);
         System.gc();
         Thread.sleep(20);

@@ -122,7 +122,7 @@ public class AllTest {
         }
         catch (Exception ex)
         {
-            System.out.println( ex.getMessage() );
+            System.out.println( ex.getCause() );
         }
 
       return;
