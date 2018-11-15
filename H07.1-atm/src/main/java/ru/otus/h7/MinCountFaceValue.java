@@ -2,7 +2,7 @@ package ru.otus.h7;
 
 import java.util.*;
 
-public class MinCountFaceValue implements IAtm {
+public class MinCountFaceValue implements IExclude {
 
     private List<Cell> lstCells;
 

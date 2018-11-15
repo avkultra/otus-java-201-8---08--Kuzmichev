@@ -2,32 +2,32 @@ package ru.otus.h7;
 
 import java.util.*;
 
-public class atmModel {
+public class AtmModel {
 
     private List<Cell> cells = new ArrayList<Cell>();
-    private IAtm iAtm;
+    private IExclude iExclude;
 
-    public atmModel() {
+    public AtmModel() {
     }
 
-    public atmModel(List<Cell> cells, IAtm iAtm) {
+    public AtmModel(List<Cell> cells, IExclude iExclude) {
         this.cells = cells;
-        this.iAtm = iAtm;
+        this.iExclude = iExclude;
 
         this.cells.sort((o1, o2) -> o2.getFaceValue() - o1.getFaceValue());
 
-        iAtm.init(this.cells);
+        iExclude.init(this.cells);
     }
 
-    public void setIatm(IAtm iatm) {
-        this.iAtm = iAtm;
+    public void setIatm(IExclude iatm) {
+        this.iExclude = iExclude;
     }
 
     public Map<Integer, Integer> exclude(int sumOfexclude) {
-        if (cells.isEmpty() || null == iAtm) throw new RuntimeException("Банкомат пуст");
+        if (cells.isEmpty() || null == iExclude) throw new IllegalStateException("Банкомат пуст");
         List<Cell> tmp = copy(cells);
-        iAtm.init(cells);
-        Map<Integer, Integer> bundleOfBills = iAtm.exclude(sumOfexclude);
+        iExclude.init(cells);
+        Map<Integer, Integer> bundleOfBills = iExclude.exclude(sumOfexclude);
         if (null == bundleOfBills) {
             cells = tmp;
             return null;
@@ -67,7 +67,7 @@ public class atmModel {
         for(Cell cell : cells) {
             if (cell.getFaceValue() == faceValue) {
                 if (cell.getBillsCount() == cell.getSize()) {
-                    throw new RuntimeException("Банкомат полон");
+                    throw new IllegalStateException("Банкомат полон");
                 }
                 cell.putFaceValue(1);
                 break;

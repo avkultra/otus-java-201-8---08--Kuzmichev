@@ -12,9 +12,10 @@ public class Main {
 
     private static Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String... args) throws Exception {
+    @SuppressWarnings("EmptyCatchBlock")
+    public static void main(String... args) {
 
-        atmModel atm = new atmModel(fillAtmFaceValue(), new MinCountFaceValue());
+        AtmModel atm = new AtmModel(fillAtmFaceValue(), new MinCountFaceValue());
 
         log.info("Банкомат:");
         Scanner inputline = new Scanner(System.in).useDelimiter("\n");
@@ -97,7 +98,7 @@ public class Main {
         return cells;
     }
 
-    private static void state(atmModel atm) {
+    private static void state(AtmModel atm) {
         log.trace("Состояние банкомата:");
 
         Map<Integer, Integer> bundleOfBills = atm.getState();
@@ -109,14 +110,14 @@ public class Main {
         }
     }
 
-    private static void putFaceValue(atmModel atm, String faceValue) {
+    private static void putFaceValue(AtmModel atm, String faceValue) {
         try {
             int fv = Integer.valueOf(faceValue);
             atm.putFaceValue(fv);
             log.info("Успешно");
         } catch (NumberFormatException e) {
             log.error("Не правельный номинал внесения.");
-        } catch (RuntimeException e) {
+        } catch (IllegalStateException e) {
             log.error("Ошибка ввода банкноты. " + e.getMessage());
         }
     }
@@ -135,7 +136,7 @@ public class Main {
         log.info(sb.toString());
     }
 
-    private static void exclude(atmModel atm, int summ) {
+    private static void exclude(AtmModel atm, int summ) {
         log.trace("Попытка получить сумму{} ...", summ);
         try {
             Map<Integer, Integer> bundleOfBills = atm.exclude(summ);
@@ -144,6 +145,8 @@ public class Main {
             } else {
                 bundle(bundleOfBills);
             }
+        } catch (IllegalStateException e) {
+            log.error("Ошибка внесения вклада. " + e.getMessage());
         } catch (Exception e) {
             log.error("Ошибка внесения вклада. " + e.getMessage());
         }
