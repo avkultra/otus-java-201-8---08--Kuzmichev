@@ -15,7 +15,7 @@ import java.util.List;
 public class DBServiceClass implements DBService {
 
     private static final String DROP_TABLE_USER = "DROP TABLE  IF EXISTS user";
-    private static final String CREATE_TABLE_USER = "CREATE TABLE user (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(256), age INT, primary key (id))";
+    private static final String CREATE_TABLE_USER = "CREATE TABLE user (id BIGINT(20)  NOT NULL AUTO_INCREMENT, name VARCHAR(255), age INT(3), primary key (id))";
 
     private static final String INSERT_USER = "INSERT INTO user (name, age) VALUES(?,?)";
 
