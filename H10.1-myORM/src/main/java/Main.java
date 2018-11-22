@@ -10,7 +10,7 @@ import ru.otus.h10.database.ConnectionHelper;
 import java.util.List;
 import java.util.Random;
 
-import ru.otus.h10.dataset.DataSetUser;
+import ru.otus.h10.dataset.UserDataSet;
 
 public class Main {
 
@@ -34,11 +34,11 @@ public class Main {
             List<String> names = dbService.getAllNames();
             log.info("Все имена: {}", names.toString());
 
-            List<DataSetUser> allUsers = dbService.getAllUsers();
+            List<UserDataSet> allUsers = dbService.getAllUsers();
 
             log.info("Все пользователи:");
 
-            for (DataSetUser user : allUsers) {
+            for (UserDataSet user : allUsers) {
                 log.info("    {}", user.toString());
             }
 
@@ -46,18 +46,18 @@ public class Main {
         }
     }
 
-    private static DataSetUser[] createListUsers(final int countUsers) {
-        DataSetUser[] users = new DataSetUser[countUsers];
+    private static UserDataSet[] createListUsers(final int countUsers) {
+        UserDataSet[] users = new UserDataSet[countUsers];
         for (int i = 0; i < countUsers; ++i) {
             users[i] = createUser();
         }
         return users;
     }
 
-    private static DataSetUser createUser() {
+    private static UserDataSet createUser() {
         Random rand = new Random();
         int index = rand.nextInt(10000);
         int age = 18 + rand.nextInt(90);
-        return new DataSetUser("User#" + index, age);
+        return new UserDataSet("User#" + index, age);
     }
 }

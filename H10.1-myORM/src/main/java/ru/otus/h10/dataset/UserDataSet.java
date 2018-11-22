@@ -1,16 +1,16 @@
 package ru.otus.h10.dataset;
 
-public class DataSetUser extends DataSet {
+public class UserDataSet extends DataSet {
 
     private String name;
     private int age;
 
-    public DataSetUser(String name, int age) {
+    public UserDataSet(String name, int age) {
         this.name = name;
         this.age = age;
     }
 
-    public DataSetUser() {
+    public UserDataSet() {
     }
 
     public void setName(String name) { this.name = name;

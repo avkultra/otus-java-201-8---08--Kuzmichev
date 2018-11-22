@@ -3,7 +3,7 @@ package ru.otus.h10.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ru.otus.h10.dataset.DataSetUser;
+import ru.otus.h10.dataset.UserDataSet;
 import ru.otus.h10.executor.Executor;
 
 import java.sql.Connection;
@@ -58,7 +58,7 @@ public class DBServiceClass implements DBService {
     }
 
     @Override
-    public void addUsers(DataSetUser... users) throws SQLException {
+    public void addUsers(UserDataSet... users) throws SQLException {
         try {
             Executor exec = new Executor(getConnection());
 
@@ -66,7 +66,7 @@ public class DBServiceClass implements DBService {
 
             exec.execUpdate(INSERT_USER, prepare -> {
 
-                for (DataSetUser user : users) {
+                for (UserDataSet user : users) {
                     prepare.setString(1, user.getName());
                     prepare.setInt(2, user.getAge());
                     prepare.executeUpdate();
@@ -113,12 +113,12 @@ public class DBServiceClass implements DBService {
     }
 
     @Override
-    public DataSetUser getUser(long id) throws SQLException {
+    public UserDataSet getUser(long id) throws SQLException {
         Executor exec = new Executor(getConnection());
         return exec.execQuery(String.format(SELECT_USER, id),
                 result -> {
                     result.next();
-                    DataSetUser user = new DataSetUser();
+                    UserDataSet user = new UserDataSet();
                     user.setName(result.getString("name"));
                     user.setAge(result.getInt("age"));
                     log.trace("User[{}] name: {}; age: {}", id, user.getName(), user.getAge());
@@ -127,15 +127,15 @@ public class DBServiceClass implements DBService {
     }
 
     @Override
-    public List<DataSetUser> getAllUsers() throws SQLException {
+    public List<UserDataSet> getAllUsers() throws SQLException {
         Executor exec = new Executor(getConnection());
 
         return exec.execQuery(SELECT_ALL_USERS, result -> {
-            List<DataSetUser> users = new ArrayList<>();
+            List<UserDataSet> users = new ArrayList<>();
 
             while (!result.isLast()) {
                 result.next();
-                DataSetUser user = new DataSetUser();
+                UserDataSet user = new UserDataSet();
                 user.setId(result.getLong("id"));
                 user.setName(result.getString("name"));
                 user.setAge(result.getInt("age"));
