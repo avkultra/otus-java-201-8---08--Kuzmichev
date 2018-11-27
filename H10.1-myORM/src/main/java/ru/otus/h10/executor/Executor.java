@@ -54,4 +54,23 @@ public class Executor {
             e.printStackTrace();
         }
     }
+
+    public long execInsert(String query) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(query,
+                Statement.RETURN_GENERATED_KEYS)) {
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getLong(1);
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+        }
+    }
 }

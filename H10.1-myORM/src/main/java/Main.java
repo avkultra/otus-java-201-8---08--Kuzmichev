@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ru.otus.h10.database.DBService;
-import ru.otus.h10.database.DBServiceClass;
+import ru.otus.h10.database.DBServiceImpl;
 import ru.otus.h10.database.ConnectionHelper;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        try (DBService dbService = new DBServiceClass(ConnectionHelper.getConnection())) {
+        try (DBService dbService = new DBServiceImpl(ConnectionHelper.getConnection())) {
 
             log.info(dbService.getDBData());
 
@@ -41,6 +41,22 @@ public class Main {
             for (UserDataSet user : allUsers) {
                 log.info("    {}", user.toString());
             }
+
+            UserDataSet userDataSet = new UserDataSet("Alex", 13);
+
+            dbService.save(userDataSet);
+            userDataSet.setName("Pupkin");
+            userDataSet.setAge(18);
+
+
+            dbService.save(userDataSet);
+            System.out.println("База: \n" + userDataSet.toString());
+
+            UserDataSet userDataSetDb = dbService.load(userDataSet.getId(), UserDataSet.class);
+
+            System.out.println("Имя из базы \n" + userDataSetDb.toString());
+            System.out.println("Значения введённое и извлечённое: ? " +
+                    String.valueOf(userDataSet.equals(userDataSetDb)));
 
             dbService.dropTables();
         }

@@ -1,6 +1,6 @@
 package ru.otus.h10.database;
 
-import ru.otus.h10.dataset.UserDataSet;
+import ru.otus.h10.dataset.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,4 +22,9 @@ public interface DBService extends AutoCloseable {
     List<String> getAllNames() throws SQLException;
 
     void dropTables() throws SQLException;
+
+
+    <T extends DataSet> void save(T entity);
+
+    <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException;
 }
