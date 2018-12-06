@@ -6,21 +6,21 @@ import org.slf4j.LoggerFactory;
 import ru.otus.h10.dataset.UserDataSet;
 import ru.otus.h10.executor.Executor;
 
-import ru.otus.h10.Helpers.DataSetHelper;
-import ru.otus.h10.Helpers.QueryHelper;
 
 import ru.otus.h10.dataset.DataSet;
 
-import java.sql.ResultSetMetaData;
 
-import java.lang.reflect.Field;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 
 public class DBServiceImpl implements DBService {
 
@@ -35,6 +35,7 @@ public class DBServiceImpl implements DBService {
     private static final String SELECT_ALL_USERS_NAME = "SELECT name FROM user";
 
     private final Connection connection;
+    private Map<Class<? extends DataSet>, DBCache> dbCaches = new HashMap<>();
 
     private Logger log = LoggerFactory.getLogger(DBServiceImpl.class);
 
@@ -44,6 +45,16 @@ public class DBServiceImpl implements DBService {
 
     private Connection getConnection() {
         return connection;
+    }
+
+    public void setDataSetClass(Class... clazz) throws SQLException {
+        for (Class cl : clazz) {
+            DBCache cache = DBCache.createCache(cl);
+            if (null == cache) {
+                throw new SQLException("ошибка инициализации класса " + cl.getSimpleName());
+            }
+            dbCaches.put(cl, cache);
+        }
     }
 
     @Override
@@ -174,129 +185,21 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public <T extends DataSet> void save(T entity) {
-        String tableName = TablesEnum.getTableName(entity.getClass());
-        if (tableName == null) {
-            return;
-        }
-
-        Map<String, String> objectDataMap =
-                DataSetHelper.getObjectData(entity);
-
-        List<String> names = new ArrayList<>(objectDataMap.size());
-        List<String> values = new ArrayList<>(objectDataMap.size());
-
-        objectDataMap.forEach((name, value) -> {
-            names.add(name);
-            values.add(value);
-        });
-        Executor executor = new Executor(connection);
-        final String query;
-        if (DataSetHelper.isNewEntity(entity)) {
-            query = QueryHelper.insertQuery(tableName,
-                    names,
-                    values);
-            try {
-                long id = executor.execInsert(query);
-                entity.setId(id);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            query = QueryHelper.updateQuery(
-                    tableName,
-                    names,
-                    values,
-                    entity.getId());
-
-            try {
-                executor.execUpdate(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        Executor executor = new Executor(getConnection(), getCache(entity.getClass()));
+        executor.save(entity);
+        return;
     }
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) throws SQLException {
-        Executor executor = new Executor(connection);
-
-        final String tableName = TablesEnum.getTableName(clazz);
-        final String query = QueryHelper.selectQuery(tableName,
-                UserDataSet.ID_NAME,
-                String.valueOf(id));
-
-        return executor.execQuery(query, resultSet -> {
-            T instance = null;
-            try {
-                instance = clazz.getConstructor().newInstance();
-                ResultSetMetaData metaData = resultSet.getMetaData();
-
-                Map<String, Field> fieldsMap = DataSetHelper.getObjectFields(instance);
-
-                while (resultSet.next()) {
-                    for (int i = 1; i <= metaData.getColumnCount(); ++i) {
-                        String name = metaData.getColumnName(i);
-                        Field currentField = fieldsMap.get(name);
-                        if (currentField == null) {
-                            throw new RuntimeException("Field " + name + " not founded");
-                        }
-                        currentField.setAccessible(true);
-
-                        Object value = getValue(
-                                resultSet,
-                                metaData.getColumnType(i),
-                                i);
-
-                        currentField.set(instance, value);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return instance;
-        });
+        Executor executor = new Executor(getConnection(), getCache(clazz));
+        T t = executor.load(id, clazz);
+        return t;
     }
 
-    private Object getValue(ResultSet resultSet, int type, int index) {
-        try {
-            switch (type) {
-                case 12:
-                    return resultSet.getString(index);
-                case 2:
-                case -5:
-                    return resultSet.getLong(index);
-                case 5:
-                case 4:
-                    return resultSet.getInt(index);
-                default:
-                    throw new RuntimeException("ERROR TYPE " + type + " BY INDEX " + index);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+
+    protected DBCache getCache(Class clazz) {
+
+        return dbCaches.get(clazz);
     }
-
-    private enum TablesEnum {
-        USER_DATA_SET(UserDataSet.class, "user"),
-        DEFAULT_DATA_SET(DataSet.class, null);
-
-        private final Class clazz;
-        private final String tableName;
-
-        TablesEnum(Class clazz, String tableName) {
-            this.clazz = clazz;
-            this.tableName = tableName;
-        }
-
-        static String getTableName(Class clazz) {
-            for (TablesEnum current : TablesEnum.values()) {
-                if (current.clazz.equals(clazz)) {
-                    return current.tableName;
-                }
-            }
-            return null;
-        }
-    }
-
 }

@@ -19,7 +19,7 @@ public class DataSetHelper {
         try {
             while (true) {
                 if (clazz.equals(Object.class)) {
-                    break;
+                   break;
                 }
                 Field[] currentFields = clazz.getDeclaredFields();
                 for (Field field : currentFields) {
@@ -33,6 +33,7 @@ public class DataSetHelper {
                         map.put(field.getName(), String.valueOf(field.get(src)));
                     }
                 }
+
                 clazz = clazz.getSuperclass();
             }
         } catch (IllegalAccessException e) {

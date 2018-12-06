@@ -22,6 +22,9 @@ public class Main {
 
         try (DBService dbService = new DBServiceImpl(ConnectionHelper.getConnection())) {
 
+            DBServiceImpl dbImpl = (DBServiceImpl) dbService;
+            dbImpl.setDataSetClass(UserDataSet.class);
+
             log.info(dbService.getDBData());
 
             dbService.makeTables();
@@ -36,23 +39,21 @@ public class Main {
 
             List<UserDataSet> allUsers = dbService.getAllUsers();
 
-            log.info("Все пользователи:");
+//            log.info("Все пользователи:");
+//
+//            for (UserDataSet user : allUsers) {
+//                log.info("    {}", user.toString());
+//            }
 
-            for (UserDataSet user : allUsers) {
-                log.info("    {}", user.toString());
-            }
-
-            UserDataSet userDataSet = new UserDataSet("Alex", 13);
-
+            UserDataSet userDataSet = new UserDataSet("Alex", 14);
             dbService.save(userDataSet);
-            userDataSet.setName("Pupkin");
-            userDataSet.setAge(18);
 
+            UserDataSet userDataSet2 = new UserDataSet("Pupkin", 18);
+            dbService.save(userDataSet2);
 
-            dbService.save(userDataSet);
             System.out.println("База: \n" + userDataSet.toString());
 
-            UserDataSet userDataSetDb = dbService.load(userDataSet.getId(), UserDataSet.class);
+            UserDataSet userDataSetDb = dbService.load(1,  UserDataSet.class);
 
             System.out.println("Имя из базы \n" + userDataSetDb.toString());
             System.out.println("Значения введённое и извлечённое: ? " +
