@@ -39,11 +39,11 @@ public class Main {
 
             List<UserDataSet> allUsers = dbService.getAllUsers();
 
-//            log.info("Все пользователи:");
-//
-//            for (UserDataSet user : allUsers) {
-//                log.info("    {}", user.toString());
-//            }
+            log.info("Все пользователи:");
+
+            for (UserDataSet user : allUsers) {
+                log.info("    {}", user.toString());
+            }
 
             UserDataSet userDataSet = new UserDataSet("Alex", 14);
             dbService.save(userDataSet);
