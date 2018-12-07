@@ -2,20 +2,22 @@ package ru.otus.h7;
 
 import java.util.*;
 
-public class MinCountFaceValue implements IExclude {
+public class MinCountFaceValue implements ExcludeStrategy {
 
     private List<Cell> lstCells;
 
     public MinCountFaceValue() {
     }
 
-    @Override
-    public void init(List<Cell> lstCell) {
-        this.lstCells = lstCell;
-    }
+ //   @Override
+//    public void init(List<Cell> lstCell) {
+//        this.lstCells = lstCell;
+//    }
 
     @Override
-    public Map<Integer, Integer> exclude(int summExclude) {
+    public Map<Integer, Integer> exclude(int summExclude, List<Cell> inLstCells) {
+
+        lstCells = inLstCells;
 
         Map<Integer, Integer> bundleOfBills = new TreeMap<Integer, Integer>();
 

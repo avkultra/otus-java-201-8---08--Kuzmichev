@@ -5,29 +5,30 @@ import java.util.*;
 public class AtmModel {
 
     private List<Cell> cells = new ArrayList<Cell>();
-    private IExclude iExclude;
+    private ExcludeStrategy excludeStrategy;
 
     public AtmModel() {
     }
 
-    public AtmModel(List<Cell> cells, IExclude iExclude) {
+    public AtmModel(List<Cell> cells, ExcludeStrategy excludeStrategy) {
         this.cells = cells;
-        this.iExclude = iExclude;
+        this.excludeStrategy = excludeStrategy;
 
         this.cells.sort((o1, o2) -> o2.getFaceValue() - o1.getFaceValue());
 
-        iExclude.init(this.cells);
+        //iExclude.init(this.cells);
+        excludeStrategy.exclude(0, this.cells);
     }
 
-    public void setIatm(IExclude iatm) {
-        this.iExclude = iExclude;
+    public void setIatm(ExcludeStrategy excludeStrategy) {
+        this.excludeStrategy = excludeStrategy;
     }
 
     public Map<Integer, Integer> exclude(int sumOfexclude) {
-        if (cells.isEmpty() || null == iExclude) throw new IllegalStateException("Банкомат пуст");
+        if (cells.isEmpty() || null == excludeStrategy) throw new IllegalStateException("Банкомат пуст");
         List<Cell> tmp = copy(cells);
-        iExclude.init(cells);
-        Map<Integer, Integer> bundleOfBills = iExclude.exclude(sumOfexclude);
+        //iExclude.init(cells);
+        Map<Integer, Integer> bundleOfBills = excludeStrategy.exclude(sumOfexclude, cells);
         if (null == bundleOfBills) {
             cells = tmp;
             return null;
