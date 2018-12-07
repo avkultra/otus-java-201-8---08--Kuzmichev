@@ -18,7 +18,7 @@ public class JsonObjectWriter {
 
     private static Logger log = LoggerFactory.getLogger(JsonObjectWriter.class);
 
-    private static boolean prtNull = false;
+    private final static boolean refNull = false;
 
 
     public static String writeObject(Object obj) throws Exception {
@@ -30,37 +30,37 @@ public class JsonObjectWriter {
             return "\"" + obj.toString() + "\"";
         }
 
-        if (isSimple(type)) {
+        if (isSimple(obj.getClass())) {
             return obj.toString();
         }
 
         if (isArray(type)) {
-            return "{" + prtArray(obj) + "}";
+            return "{" + printLnArray(obj) + "}";
         }
 
         if (obj instanceof List) {
-            return "{" + prtList((List)obj) + "}";
+            return "{" + printLnList((List)obj) + "}";
         }
 
         if (obj instanceof Set) {
-            return "{" + prtSet((Set)obj) + "}";
+            return "{" + printLnSet((Set)obj) + "}";
         }
 
         if (obj instanceof Map) {
-            return "{" + prtMap((Map)obj) + "}";
+            return "{" + printLnMap((Map)obj) + "}";
         }
 
-        return "{" + prtObjFields(obj) + "}";
+        return "{" + printLnObjFields(obj) + "}";
     }
 
 
-    private static String prtObjFields(Object obj) throws Exception {
+    private static String printLnObjFields(Object obj) throws Exception {
 
         if (null == obj) return null;
 
         StringBuilder sb = new StringBuilder();
 
-        List<String> fields = prtNoStaticFieldsOfClass(obj.getClass(), obj);
+        List<String> fields = printLnNoStaticFieldsOfClass(obj.getClass(), obj);
 
         if (fields.isEmpty()) {
             log.info("Отсутствуют поля");
@@ -70,8 +70,8 @@ public class JsonObjectWriter {
         return sb.toString();
     }
 
-    private static List<String> prtNoStaticFieldsOfClass(Class clazz, Object obj) throws Exception {
-        List<String> lstfield = new ArrayList<>();
+    private static List<String> printLnNoStaticFieldsOfClass(Class clazz, Object obj) throws Exception {
+        List<String> lstField = new ArrayList<>();
         Field[] fields = clazz.getDeclaredFields();
 
         if (null != fields && 0 < fields.length) {
@@ -83,29 +83,29 @@ public class JsonObjectWriter {
                     String val = writeObject(f.get(obj));
 
                     if (null != val) {
-                        lstfield.add("\"" + f.getName() + "\":" + val);
-                    } else if (prtNull) {
-                        lstfield.add("\"" + f.getName() + "\":" + "null");
+                        lstField.add("\"" + f.getName() + "\":" + val);
+                    } else if (refNull) {
+                        lstField.add("\"" + f.getName() + "\":" + "null");
                     }
                 }
             }
         }
         if (!clazz.getName().contains("Object")) {
-            prtNoStaticFieldsOfClass(clazz.getSuperclass(), obj);
+            printLnNoStaticFieldsOfClass(clazz.getSuperclass(), obj);
         }
-        return lstfield;
+        return lstField;
     }
 
-    private static boolean isSimple(Type type) {
-        if (null == type) return false;
-        String name = type.getTypeName();
-        return  name.equals("java.lang.Byte") ||
-                name.equals("java.lang.Short") ||
-                name.equals("java.lang.Integer") ||
-                name.equals("java.lang.Long") ||
-                name.equals("java.lang.Float") ||
-                name.equals("java.lang.Double") ||
-                name.equals("java.lang.Boolean");
+    private static boolean isSimple(Class clazz) {
+        if (null == clazz) return false;
+        //String name = type.getTypeName();
+        return  clazz.equals(Byte.class) ||
+                clazz.equals(Short.class) ||
+                clazz.equals(Integer.class) ||
+                clazz.equals(Long.class) ||
+                clazz.equals(Float.class) ||
+                clazz.equals(Double.class) ||
+                clazz.equals(Boolean.class);
     }
 
     private static boolean isString(Type type) {
@@ -119,7 +119,7 @@ public class JsonObjectWriter {
         return type.getTypeName().contains("[]");
     }
 
-    private static String prtMap(Map<Object, Object> map) throws Exception {
+    private static String printLnMap(Map<Object, Object> map) throws Exception {
         Set<Map.Entry<Object,Object>> setmap = map.entrySet();
 
         List<String> lines = new ArrayList<>();
@@ -141,71 +141,66 @@ public class JsonObjectWriter {
         return result;
     }
 
-    private static String prtList(List<Object> list) throws Exception {
+    private static String printLnList(List<Object> list) throws Exception {
         if (null == list) return null;
-        return prtArray(list.toArray(new Object[]{}));
+        return printLnArray(list.toArray(new Object[]{}));
     }
 
-    private static String prtSet(Set<Object> set) throws Exception {
+    private static String printLnSet(Set<Object> set) throws Exception {
         if (null == set) return null;
-        return prtArray(set.toArray(new Object[]{}));
+        return printLnArray(set.toArray(new Object[]{}));
     }
 
-    private static String prtArray(Object object) throws Exception {
+    private static String printLnArray(Object object) throws Exception {
         String typeName = object.getClass().getTypeName();
 
+
         StringBuilder sb = new StringBuilder();
-        if (typeName.contains("boolean")) {
+        if (typeName.contains("boolean") ) {
+
 
             boolean[] arrBool = (boolean[]) object;
-            sb.append(prtArray(hlpArray(arrBool)));
+            sb.append(printLnArray(hlpArray(arrBool)));
 
         } else if (typeName.contains("byte")) {
-
-            byte[] arrByte = (byte[]) object;
-            sb.append(prtArray(hlpArray(arrByte)));
+           byte[] arrByte = (byte[]) object;
+            sb.append(printLnArray(hlpArray(arrByte)));
 
         } else if (typeName.contains("short")) {
-
             short[] arrShort = (short[]) object;
-            sb.append(prtArray(hlpArray(arrShort)));
+            sb.append(printLnArray(hlpArray(arrShort)));
 
         } else if (typeName.contains("int")) {
-
-            int[] arrInt = (int[]) object;
-            sb.append(prtArray(hlpArray(arrInt)));
+           int[] arrInt = (int[]) object;
+            sb.append(printLnArray(hlpArray(arrInt)));
 
         } else if (typeName.contains("long")) {
-
-            long[] arrLong = (long[]) object;
-            sb.append(prtArray(hlpArray(arrLong)));
+          long[] arrLong = (long[]) object;
+            sb.append(printLnArray(hlpArray(arrLong)));
 
         } else if (typeName.contains("float")) {
-
-            float[] arrFloat = (float[]) object;
-            sb.append(prtArray(hlpArray(arrFloat)));
+           float[] arrFloat = (float[]) object;
+           sb.append(printLnArray(hlpArray(arrFloat)));
 
         } else if (typeName.contains("double")) {
-
             double[] arrDouble = (double[]) object;
-            sb.append(prtArray(hlpArray(arrDouble)));
+            sb.append(printLnArray(hlpArray(arrDouble)));
 
-        } else if (typeName.contains("String")) {
-
+       } else if (typeName.contains("String")) {
             String[] arrString = (String[]) object;
-            sb.append(prtArray(arrString));
+            sb.append(printLnArray(arrString));
 
         } else {
 
             Object[] arrObj = (Object[]) object;
-            sb.append(prtArray(arrObj));
+            sb.append(printLnArray(arrObj));
         }
 
         return sb.toString();
     }
 
 
-    private static <T> String prtArray(T[] array) throws Exception {
+    private static <T> String printLnArray(T[] array) throws Exception {
         if (null == array) {
             return "";
         }
