@@ -18,7 +18,7 @@ public class JsonObjectWriter {
 
     private static Logger log = LoggerFactory.getLogger(JsonObjectWriter.class);
 
-    private final static boolean refNull = false;
+    private final static boolean REF_NULL = false;
 
 
     public static String writeObject(Object obj) throws Exception {
@@ -35,7 +35,7 @@ public class JsonObjectWriter {
         }
 
         if (isArray(type)) {
-            return "{" + printLnArray(obj) + "}";
+            return "[" + printLnArray(obj) + "]";
         }
 
         if (obj instanceof List) {
@@ -84,7 +84,7 @@ public class JsonObjectWriter {
 
                     if (null != val) {
                         lstField.add("\"" + f.getName() + "\":" + val);
-                    } else if (refNull) {
+                    } else if (REF_NULL) {
                         lstField.add("\"" + f.getName() + "\":" + "null");
                     }
                 }
