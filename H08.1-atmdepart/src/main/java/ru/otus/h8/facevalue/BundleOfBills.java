@@ -4,6 +4,8 @@ public class BundleOfBills {
     private Nominal nominal;
     private int billsCount;
 
+
+
     public BundleOfBills(Nominal nominal, int billsCount) {
         this.nominal = nominal;
         this.billsCount = billsCount;

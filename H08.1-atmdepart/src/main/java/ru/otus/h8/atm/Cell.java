@@ -8,6 +8,7 @@ public class Cell extends BundleOfBills {
     public static final int DEFAULT_SIZE = 1000;
     private final int size;
 
+
     public Cell(Nominal nominal) {
         super(nominal, 0);
         this.size = DEFAULT_SIZE;

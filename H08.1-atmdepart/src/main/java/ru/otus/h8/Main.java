@@ -15,20 +15,20 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static Logger log = LoggerFactory.getLogger(Main.class);
+    //private static Logger log = LoggerFactory.getLogger(Main.class);
 
     @SuppressWarnings("EmptyCatchBlock")
     public static void main(String... args){
 
         ATMDepart depart = new ATMDepart();
 
-        log.info("Банкоматы:");
+        System.out.println("Банкоматы:");
 
         Scanner scanner = new Scanner(System.in).useDelimiter("\n");
         boolean finished = false;
 
         while(!finished) {
-            log.info("Введите номер банкомата и сумму вклада");
+            System.out.println("Введите номер банкомата и сумму вклада");
             String input = scanner.next();
             String[] command = input.split(" ");
 
@@ -38,19 +38,19 @@ public class Main {
                         finished = true;
                         break;
                     case "h": {
-                        log.info("Банкомат:");
+                        System.out.println("Банкомат:");
 
-                        log.info("Настройки: Число|p Число|s|e|h");
+                        System.out.println("Настройки: Число|p Число|s|e|h");
 
-                        log.info("  Число    - сумма вклада - 50; 100 ...");
+                        System.out.println("  Число    - сумма вклада - 50; 100 ...");
 
-                        log.info("  p Номинал - внести в банкомат");
+                        System.out.println("  p Номинал - внести в банкомат");
 
-                        log.info("  s - Состояние банкомата");
+                        System.out.println("  s - Состояние банкомата");
 
-                        log.info("  e - выход");
+                        System.out.println("  e - выход");
 
-                        log.info("");
+                        System.out.println("");
                     }
                     break;
                     case "s":
@@ -63,7 +63,7 @@ public class Main {
                         restoreOfATMs(depart);
                         break;
                     default:
-                        log.info("Неправильный ввод. Введите 'h' чтоб получить справку");
+                        System.out.println("Неправильный ввод. Введите 'h' чтоб получить справку");
                         break;
                 }
             } else if (2 == command.length) {
@@ -74,12 +74,12 @@ public class Main {
                     ATMModel atm = depart.getATM(atmName);
 
                         if (null == atm) {
-                            log.info("Неверное имя банкомата: {}", atmName);
+                            System.out.println("Неверное имя банкомата: " +  atmName);
                         } else {
                             exclude(atm, summ);
                         }
                     } catch (NumberFormatException e) {
-                    log.warn("Неверная сумма");
+                    System.out.println("Неверная сумма");
                 }
 
             } else if (3 == command.length) {
@@ -87,88 +87,88 @@ public class Main {
                     String comm = command[1];
 
                     if (!comm.equalsIgnoreCase("p")) {
-                        log.info("Неправильный ввод. Введите 'h' чтоб получить справку");
+                        System.out.println("Неправильный ввод. Введите 'h' чтоб получить справку");
                     }
                     String atmName = command[0];
 
                     ATMModel atm = depart.getATM(atmName);
                     if (null == atm) {
 
-                        log.info("Неверное имя банкомата: {}", atmName);
+                        System.out.println("Неверное имя банкомата: " + atmName);
 
                     } else {
 
                         putFaceValue(atm, Nominal.fromString(command[2]));
                     }
                 } catch (IllegalArgumentException e) {
-                    log.warn("Неверная сумма");
+                    System.out.println("Неверная сумма");
                 }
             } else {
-                log.info("Неправильный ввод. Введите 'h' чтоб получить справку");
+                System.out.println("Неправильный ввод. Введите 'h' чтоб получить справку");
             }
         }
-        log.info("Конец");
+        System.out.println("Конец");
     }
 
     private static void exclude(ATMModel atm, int sum) {
-        log.trace("Попытка получить сумму {} из ()", sum, atm.getName());
+        System.out.println("Попытка получить сумму " +  sum + "из " +  atm.getName());
         try {
             SelectionModel sm = atm.exclude(sum);
-            log.info("Выдано: {}", sm.toString());
+            System.out.println("Выдано: " + sm.toString());
         } catch (ATMExcludeException e) {
-              log.error("Запрошенная сумма не может быть выдана. ", e);
+            System.out.println("Запрошенная сумма не может быть выдана. " + e);
         } catch (Exception e) {
-              log.error("Ошибка банкомата ", e);
+            System.out.println("Ошибка банкомата "+ e);
         }
     }
 
     private static void list(List<ATMModel> atmList) {
-        log.info("Список банкоматов");
+        System.out.println("Список банкоматов");
 
         if (atmList.isEmpty()) {
-            log.info("Список пуст");
+            System.out.println("Список пуст");
         }
 
-        log.info("Банкоматы:");
+        System.out.println("Банкоматы:");
         for (ATMModel atm : atmList) {
-            log.info(" {}", atm.getName());
+            System.out.println(atm.getName());
         }
     }
 
     private static void states(List<ATMModel> atmList) {
-        log.info("Состояние банкоматов");
+        System.out.println("Состояние банкоматов");
 
         for (ATMModel atm : atmList) {
             SelectionModel sm = atm.getState();
-            log.info("Банкомат: {}", atm.getName());
+            System.out.println("Банкомат: " + atm.getName());
             if (sm.isEmpty()) {
-                log.info("Банкомат {} пуст", atm.getName());
+                System.out.println("Банкомат " + atm.getName() );
             } else {
-                log.info("В банкомате {} пуст", sm.toString());
+                System.out.println("В банкомате " + sm.toString());
             }
         }
     }
 
     private static void restoreOfATMs(ATMDepart depart) {
 
-        log.info("Восcтановление банкоматов");
+        System.out.println("Восcтановление банкоматов");
 
         depart.restoreOfATMs();
 
-        log.info("Восстановно");
+        System.out.println("Восстановно");
         states(depart.getATMs());
     }
 
     private static void putFaceValue(ATMModel atm, Nominal faceValue) {
-        log.trace("putFaceValue() {} {}", atm,  faceValue);
+        System.out.println("putFaceValue() " + atm + " " + faceValue);
 
         try {
             atm.putFaceValue(faceValue);
 
-            log.info("Принято");
+            System.out.println("Принято");
         } catch (IllegalStateException e) {
 
-            log.error("Ошибка ввода купюры. ", e);
+            System.out.println("Ошибка ввода купюры. "+ e);
         }
     }
 }

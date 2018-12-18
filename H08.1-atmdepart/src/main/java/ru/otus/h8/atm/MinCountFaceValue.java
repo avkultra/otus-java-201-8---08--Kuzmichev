@@ -5,7 +5,7 @@ import ru.otus.h8.facevalue.Nominal;
 
 import java.util.List;
 
-public class MinCountFaceValue implements IExclude {
+public class MinCountFaceValue implements ExcludeStrategy {
 
     @Override
     public SelectionModel exclude(List<Cell> cells, int summExclude) {

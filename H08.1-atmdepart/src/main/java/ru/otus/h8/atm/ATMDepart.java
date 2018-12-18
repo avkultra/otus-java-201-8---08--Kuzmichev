@@ -18,6 +18,7 @@ public class ATMDepart {
         for (int i = 0; i < NUMBER_OF_ATMS; i++) {
             ATMModel atm = new ATMModel(new MinCountFaceValue());
             atm.load(ATMFactory.createAtmContent());
+            atm.saveState();
             atmList.add(atm);
         }
         log.info("{} добавление ATM", atmList.size());
@@ -66,6 +67,7 @@ public class ATMDepart {
         int atmBalance = 0;
         SelectionModel sm = atm.empty();
         if (null != sm) {
+            atm.restoreState();
             atmBalance = sm.getSum();
         }
         atm.load(ATMFactory.createAtmContent());

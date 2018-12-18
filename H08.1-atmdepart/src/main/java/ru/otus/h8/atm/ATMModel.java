@@ -5,23 +5,28 @@ import ru.otus.h8.facevalue.SelectionModel;
 import ru.otus.h8.facevalue.Nominal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ATMModel {
 
     private List<Cell> cells = new ArrayList<>();
-    private IExclude exclude;
+    private Memento initMemento;
+
+    private ExcludeStrategy excludeStrategy;
     private final String name;
     private static int iatm = 0;
 
-    public ATMModel(IExclude exclude) {
-        this.exclude = exclude;
+    public ATMModel(ExcludeStrategy excludeStrategy) {
+        this.excludeStrategy = excludeStrategy;
         this.name = "ATM_" + iatm++;
+        //saveState();
     }
 
-    public ATMModel(IExclude exclude, String name) {
-        this.exclude = exclude;
+    public ATMModel(ExcludeStrategy excludeStrategy, String name) {
+        this.excludeStrategy = excludeStrategy;
         this.name = name;
+        //saveState();
     }
 
     public void load(SelectionModel sm) {
@@ -48,9 +53,9 @@ public class ATMModel {
     }
 
     public SelectionModel exclude(int sumExclude) throws ATMExcludeException {
-        if (cells.isEmpty() ||  null == exclude) throw new RuntimeException("Системная ошибка");
+        if (cells.isEmpty() ||  null == excludeStrategy) throw new RuntimeException("Системная ошибка");
         List<Cell> tmpCells = copyCells(cells);
-        SelectionModel sm = exclude.exclude(cells, sumExclude);
+        SelectionModel sm = excludeStrategy.exclude(cells, sumExclude);
         if ( null == sm) {
             cells = tmpCells;
             throw new ATMExcludeException();
@@ -121,5 +126,23 @@ public class ATMModel {
             }
         }
         return null;
+    }
+
+
+    private Memento saveMemento() {
+        return new Memento(cells);
+    }
+
+    private void setMemento(Memento memento) {
+        cells.clear();
+        this.cells = memento.getState();
+    }
+
+    public void saveState() {
+        initMemento = saveMemento();
+    }
+
+    public void restoreState() {
+        setMemento(initMemento);
     }
 }
