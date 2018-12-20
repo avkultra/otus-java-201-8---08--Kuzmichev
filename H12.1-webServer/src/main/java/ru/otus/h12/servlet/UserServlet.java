@@ -46,14 +46,19 @@ public class UserServlet extends HttpServlet {
                        HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> pageVariables = PageVariables.create(request);
 
-        if (request.getParameter(SUBMIT_ADD_PARAMETER_NAME) != null) {
+        if (null != request.getParameter(SUBMIT_ADD_PARAMETER_NAME)) {
+
             String userName = request.getParameter(NAME_PARAMETER_NAME);
             String userAge = request.getParameter(AGE_PARAMETER_NAME);
 
             if (!userName.equals("") && !userAge.equals("")) {
+
                 UserDataSet user = new UserDataSet(userName, Integer.parseInt(userAge));
+
                 try {
+
                     dbService.save(user);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -76,21 +81,24 @@ public class UserServlet extends HttpServlet {
 
         Map<String, Object> pageVariables = PageVariables.create(request);
 
-        cachedUserCount = (cachedUserCount == null) ? dbService.count() : cachedUserCount;
+        cachedUserCount = (null == cachedUserCount) ? dbService.count() : cachedUserCount;
         pageVariables.put(USER_COUNT_VARIABLE_NAME, cachedUserCount);
 
-        if (request.getParameter(SUBMIT_SEARCH_PARAMETER_NAME) != null) {
+        if (null != request.getParameter(SUBMIT_SEARCH_PARAMETER_NAME)) {
             String userId = request.getParameter(ID_PARAMETER_NAME);
             if (!userId.equals("")) {
+
                 try {
                     String userName = dbService.read(Long.parseLong(userId)).getName();
                     pageVariables.put(USER_NAME_VARIABLE_NAME, userName);
                 } catch (Exception e) {
                     e.printStackTrace();
                     pageVariables.put(USER_NAME_VARIABLE_NAME, USER_NOT_FOUND);
+
                 }
-            } else
+            } else {
                 pageVariables.put(IS_SEARCH_ERROR_VARIABLE_NAME, USER_NO_ID_SET);
+            }
         }
 
         response.setContentType(CONTENT_TYPE);
