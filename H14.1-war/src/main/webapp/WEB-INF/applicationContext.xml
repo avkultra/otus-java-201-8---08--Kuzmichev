@@ -4,7 +4,7 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="cache" class="ru.otus.h14.cache.CacheEngineImpl">
-        <constructor-arg name="maxElements" value="1000"></constructor-arg>
+        <constructor-arg name="maxElems" value="1000"></constructor-arg>
         <constructor-arg name="lifeTimeMs" value="0"></constructor-arg>
         <constructor-arg name="idleTimeMs" value="0"></constructor-arg>
         <constructor-arg name="isEternal" value="1"></constructor-arg>
