@@ -10,12 +10,25 @@
         <constructor-arg name="isEternal" value="1"></constructor-arg>
     </bean>
 
+    <bean id="messageSystem" class="ru.otus.h15.messageSystem.MessageSystem"/>
+
+    <bean id="messageSystemContext" class="ru.otus.h15.app.MessageSystemContext">
+        <constructor-arg ref="messageSystem"/>
+    </bean>
+
+
     <bean id="dbService" class="ru.otus.h15.helper.DBHelper" factory-method="initialDB">
         <constructor-arg name="address" value="DBService"></constructor-arg>
         <constructor-arg ref="messageSystemContext"/>
         <constructor-arg ref="cache"/>
     </bean>
 
+
     <bean id="templateProcessor" class="ru.otus.h15.servlet.TemplateProcessor"/>
+
+    <bean id="frontendService" class="ru.otus.l15.app.FrontendServiceImpl">
+        <constructor-arg ref="messageSystemContext"/>
+        <constructor-arg name="address" value="FrontendService"></constructor-arg>
+    </bean>
 
 </beans>
