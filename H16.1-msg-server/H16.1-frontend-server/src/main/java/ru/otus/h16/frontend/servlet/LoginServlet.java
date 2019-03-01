@@ -1,9 +1,7 @@
-package ru.otus.h15.servlet;
+package ru.otus.h16.frontend.servlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.servlet.ServletConfig;
@@ -66,7 +64,7 @@ public class LoginServlet extends HttpServlet {
     }
 
     private void saveToCookie(HttpServletResponse response, String requestLogin) {
-        response.addCookie(new Cookie("H12.1-login", requestLogin));
+        response.addCookie(new Cookie("L12.1-login", requestLogin));
     }
 
     private void saveToServlet(HttpServletRequest request, String requestLogin) {
